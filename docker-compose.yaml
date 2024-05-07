@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    networks:
+      - backend
+
+  nginx-l4:
+    image: nginx:alpine
+    volumes:
+      - ./nginx-l4.conf:/etc/nginx/nginx.conf
+    ports:
+      - "5000:5000"
+    depends_on:
+      - app
+    networks:
+      - backend
+
+  nginx-l7:
+    image: nginx:alpine
+    volumes:
+      - ./nginx-l7.conf:/etc/nginx/nginx.conf
+    ports:
+      - "9002:80"
+    depends_on:
+      - nginx-l4
+    networks:
+      - backend
+
+networks:
+  backend:
